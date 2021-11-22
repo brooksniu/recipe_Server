@@ -1,8 +1,13 @@
 // get the CRUD Mongodb function
 // const MongoClient = require('mongodb').MongoClient;
 const mongoose = require("mongoose");
+const 
 const MongoUrl = "mongodb://127.0.0.1:27017";
 const dbName = "devil_dishes";
+
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
 
 // connect to MongoDB CRUD system
 async function connectdb() {
