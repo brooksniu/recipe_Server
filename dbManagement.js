@@ -7,7 +7,7 @@ const dbName = "devil_dishes";
 // connect to MongoDB CRUD system
 async function connectdb() {
     await mongoose.connect(MongoUrl + "/" + dbName);
-    console.log("connected to db");
+    console.log("connected to db ");
 }
 connectdb().catch(err => console.log(err));
 
