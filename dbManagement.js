@@ -53,7 +53,7 @@ const recipe = mongoose.model("recipe", recipeSchema);
 // routers
 // express operations
 app.get("/", (req, res) => {
-    res.send("you are not supposed to see this, check fetch request");
+    res.send("Server is up and running, if you see this in app check fetch request");
 });
 
 // login authentication system
