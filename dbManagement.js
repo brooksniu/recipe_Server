@@ -21,7 +21,7 @@ connectdb().catch(err => console.log(err));
 // set up express
 const express = require("express");
 const app = express();
-const port = 3000;
+// const port = 3000;
 // parst post request body
 const bodyParser = require("body-parser");
 // allow browser and server to share data
