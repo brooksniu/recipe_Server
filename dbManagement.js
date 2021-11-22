@@ -19,19 +19,26 @@ async function connectdb() {
 connectdb().catch(err => console.log(err));
 
 // set up express
+// allow browser and server to share data
+const cors = require("cors");
 const express = require("express");
 const app = express();
 // const port = 3000;
 // parst post request body
 const bodyParser = require("body-parser");
-// allow browser and server to share data
-const cors = require("cors");
 // allow sharing data
 app.use (cors());  
 // allow url-encoded bodies
 app.use (bodyParser.urlencoded( { extended: true }));
 // allow json-encoded bodies
 app.use (bodyParser.json());  
+
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*']);
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
 
 // mongoDB Schemas
 // userdata
