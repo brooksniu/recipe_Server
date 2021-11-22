@@ -1,8 +1,8 @@
 // get the CRUD Mongodb function
 // const MongoClient = require('mongodb').MongoClient;
 const mongoose = require("mongoose");
-const MongoUrl = "mongodb://127.0.0.1:27017";
-const dbName = "devil_dishes";
+const MongoUrl = "mongodb+srv://software_devils:software_devils@cluster0.uzv91.mongodb.net";
+const dbName = "devil_dishes?retryWrites=true&w=majority";
 
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
@@ -10,8 +10,11 @@ if (process.env.NODE_ENV !== "production") {
 
 // connect to MongoDB CRUD system
 async function connectdb() {
-    await mongoose.connect(MongoUrl + "/" + dbName);
-    console.log("connected to db ");
+    await mongoose.connect(MongoUrl + "/" + dbName)
+        .catch(error => {
+            console.log(error);
+        });
+    console.log("connected to db");
 }
 connectdb().catch(err => console.log(err));
 
