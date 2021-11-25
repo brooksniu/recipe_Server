@@ -43,8 +43,13 @@ const userSchema = new mongoose.Schema({
 const recipeSchema = new mongoose.Schema({
     title: String,
     img: String,
-    ingredients: Array
-});
+    ingredients: Array,
+    servings: String,
+    cookTime: String,
+    author: String,
+    instruction: Array,
+    tags: Array
+}); 
 // Convert Schema to model
 const user = mongoose.model("user", userSchema);
 const recipe = mongoose.model("recipe", recipeSchema);
@@ -160,6 +165,11 @@ app.post("/add", async function(req, res) {
     const title = req.body.title;
     const img = req.body.img;
     const ingredients = req.body.ingredients;
+    const servings = req.body.servings;
+    const cookTime = req.body.cookTime;
+    const author = req.body.author;
+    const instructions = req.body.instructions;
+    const tags = req.body.tags;
     // if recipe exists
     let exists = await checkRecipeExist(title)
     .then(resolved => {return resolved})
@@ -169,7 +179,8 @@ app.post("/add", async function(req, res) {
         return;
     }
     // if recipe DNE, create a new recipe profile & store in DB
-    const newProfile = new recipe({title: title, img: img, ingredients: ingredients});
+    const newProfile = new recipe({title: title, img: img, ingredients: ingredients, servings: servings,
+                                    cookTime: cookTime, author: author, instructions: instructions, tags: tags});
     await newProfile.save();
     res.send("add successful");
 });
