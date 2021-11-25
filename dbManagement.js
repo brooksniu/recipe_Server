@@ -47,7 +47,7 @@ const recipeSchema = new mongoose.Schema({
     servings: String,
     cookTime: String,
     author: String,
-    instruction: Array,
+    instructions: Array,
     tags: Array
 }); 
 // Convert Schema to model
