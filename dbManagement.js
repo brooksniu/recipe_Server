@@ -153,11 +153,21 @@ async function checkUserExist(username) {
 
 // get recipe from server, will be added with specific users
 // TODO
-app.post("/getrecipe", async function(req, res) {
+app.post("/getAllRecipe", async function(req, res) {
     let allRecipe = await recipe.find()
         .then(recipeData => {return recipeData})
         .catch(error => {return error});
     res.send(allRecipe);
+});
+
+// get recipe from server, will be added with specific users
+// TODO
+app.post("/getRecipe", async function(req, res) {
+    let title = req.body.title;
+    let recipe = await recipe.find({title: title})
+        .then(recipeData => {return recipeData})
+        .catch(error => {return error});
+    res.send(recipe);
 });
 
 // add recipe
@@ -227,6 +237,11 @@ app.post("/update", async function(req, res) {
     const title = req.body.title;
     const img = req.body.img;
     const ingredients = req.body.ingredients;
+    const servings = req.body.servings;
+    const cookTime = req.body.cookTime;
+    const author = req.body.author;
+    const instructions = req.body.instructions;
+    const tags = req.body.tags;
     // if recipe exists
     let exists = await checkRecipeExist(title)
     .then(resolved => {return resolved})
