@@ -164,10 +164,10 @@ app.post("/getAllRecipe", async function(req, res) {
 // TODO
 app.post("/getRecipe", async function(req, res) {
     let title = req.body.title;
-    let recipe = await recipe.find()
+    let oneRecipe = await recipe.findOne(title)
         .then(recipeData => {return recipeData})
         .catch(error => {return error});
-    res.send(recipe);
+    res.send(oneRecipe);
 });
 
 // add recipe
