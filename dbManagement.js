@@ -163,11 +163,11 @@ app.post("/getAllRecipe", async function(req, res) {
 // get recipe from server, will be added with specific users
 // TODO
 app.post("/getRecipe", async function(req, res) {
-    const title = req.body.title;
-    let oneRecipe = await recipe.findOne({title: title})
+    const _id = req.body._id;
+    let oneRecipe = await recipe.findOne({_id: _id})
         .then(recipeData => {return recipeData})
         .catch(error => {return error});
-    console.log(title);
+    console.log(_id);
     res.send(oneRecipe);
 });
 
@@ -181,8 +181,9 @@ app.post("/add", async function(req, res) {
     const author = req.body.author;
     const instructions = req.body.instructions;
     const tags = req.body.tags;
+    const _id = req.body._id;
     // if recipe exists
-    let exists = await checkRecipeExist(title)
+    let exists = await checkRecipeExist(_id)
     .then(resolved => {return resolved})
     .catch(rejected => {return rejected});
     if (exists) {
@@ -192,13 +193,15 @@ app.post("/add", async function(req, res) {
     // if recipe DNE, create a new recipe profile & store in DB
     const newProfile = new recipe({title: title, img: img, ingredients: ingredients, servings: servings,
                                     cookTime: cookTime, author: author, instructions: instructions, tags: tags});
-    await newProfile.save();
-    res.send("add successful");
+    let id = await newProfile.save()
+            .then(newRecipe => {return newRecipe._id})
+            .catch(err => {return err});
+    res.send(id);
 });
 
 // check if recipe exists
-async function checkRecipeExist(recipeTitle) {
-    const exists = await recipe.exists({title: recipeTitle});
+async function checkRecipeExist(_id) {
+    const exists = await recipe.exists({_id: _id});
     if (exists) {
         console.log(`recipe exists, ${exists} returned`);
         return Promise.resolve(exists);
@@ -212,25 +215,23 @@ async function checkRecipeExist(recipeTitle) {
 
 // delete recipe
 app.post("/delete", async function(req, res) {
-    const title = req.body.title;
-    const img = req.body.img;
-    const ingredients = req.body.ingredients;
+    const _id = req.body._id;
     // if recipe exists
-    let exists = await checkRecipeExist(title)
+    let exists = await checkRecipeExist(_id)
     .then(resolved => {return resolved})
     .catch(rejected => {return rejected});
-    console.log(title);
+    console.log(_id);
     if (!exists) {
-        res.send(`recipe ${title} doesn't exist, cannot delete`);
+        res.send(`recipe ${_id} doesn't exist, cannot delete`);
         return;
     }
     // if recipe exists, delete from DB
-    await recipe.deleteOne({title: title})
+    await recipe.deleteOne({_id: _id})
         .catch(error => {
             res.send(`delete failed, ${error}`);
             return;
         });
-    res.send(`recipe ${title} deleted`);
+    res.send(`recipe ${_id} deleted`);
 });
 
 // update recipe
@@ -243,8 +244,9 @@ app.post("/update", async function(req, res) {
     const author = req.body.author;
     const instructions = req.body.instructions;
     const tags = req.body.tags;
+    const _id = req.body._id;
     // if recipe exists
-    let exists = await checkRecipeExist(title)
+    let exists = await checkRecipeExist(_id)
     .then(resolved => {return resolved})
     .catch(rejected => {return rejected});
     if (!exists) {
@@ -252,7 +254,8 @@ app.post("/update", async function(req, res) {
         return;
     }
     // if recipe exists, delete from DB
-    await recipe.updateOne({title: title, img: img, ingredients: ingredients})
+    await recipe.findByIdAndUpdate(_id, {title: title, img: img, ingredients: ingredients, servings: servings,
+                                            cookTime: cookTime, author: author, instructions: instructions, tags: tags})
         .catch(error => {
             res.send(`update failed, ${error}`);
             return;
