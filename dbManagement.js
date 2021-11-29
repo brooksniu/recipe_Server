@@ -163,10 +163,11 @@ app.post("/getAllRecipe", async function(req, res) {
 // get recipe from server, will be added with specific users
 // TODO
 app.post("/getRecipe", async function(req, res) {
-    let title = req.body.title;
-    let oneRecipe = await recipe.findOne(title)
+    const title = req.body.title;
+    let oneRecipe = await recipe.findOne({title: title})
         .then(recipeData => {return recipeData})
         .catch(error => {return error});
+    console.log(title);
     res.send(oneRecipe);
 });
 
