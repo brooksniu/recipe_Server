@@ -164,7 +164,7 @@ app.post("/getAllRecipe", async function(req, res) {
 // TODO
 app.post("/getRecipe", async function(req, res) {
     let title = req.body.title;
-    let recipe = await recipe.find({title: title})
+    let recipe = await recipe.find()
         .then(recipeData => {return recipeData})
         .catch(error => {return error});
     res.send(recipe);
