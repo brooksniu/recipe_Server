@@ -164,10 +164,10 @@ app.post("/getAllRecipe", async function(req, res) {
 // TODO
 app.post("/getRecipe", async function(req, res) {
     const _id = req.body._id;
-    let oneRecipe = await recipe.findOne({_id: _id})
+    let oneRecipe = await recipe.findById({_id: _id})
         .then(recipeData => {return recipeData})
         .catch(error => {return error});
-    console.log(_id);
+    console.log("in getRecipe: " + _id);
     res.send(oneRecipe);
 });
 
@@ -194,8 +194,9 @@ app.post("/add", async function(req, res) {
     const newProfile = new recipe({title: title, img: img, ingredients: ingredients, servings: servings,
                                     cookTime: cookTime, author: author, instructions: instructions, tags: tags});
     let id = await newProfile.save()
-            .then(newRecipe => {return newRecipe._id})
+            .then(newRecipe => {return newRecipe._id.toString()})
             .catch(err => {return err});
+    console.log(id);
     res.send(id);
 });
 
