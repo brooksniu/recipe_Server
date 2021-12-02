@@ -77,7 +77,7 @@ app.post("/login", async function(req,res) {
         res.send("login successful");
     }
     else {
-        res.send("incorrect password or email");
+        res.send("incorrect password or username");
     }
 });
 
