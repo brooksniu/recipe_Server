@@ -144,18 +144,41 @@ app.post("/register", async function(req, res) {
     res.send("register successful");
 });
 
-app.post("")
+app.post("/addFavorite", async function (req, res) {
+    const username = req.body.username;
+    const _id = req.body._id;
+    let exists = await checkUserExist(username)
+        .then(resolved => {return resolved})
+        .catch(rejected => {return rejected});
+    // if user exists
+    if (exists) {
+        // add the recipe id into user's favorite array
+        console.log(`recipe ID to add to Favorite: ${_id}  ; username: ${username}`);
+        user.findOneAndUpdate({username: username}, { $push: {favorites: _id} }, function (error, success) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(success);
+            }
+        });
+        res.send("updated favorite recipe");
+    }
+    // if user doesn't exist
+    else {
+        res.send(`user ${username} doesn't exist`);
+    }
+});
 
 // check if user exists
 async function checkUserExist(username) {
     const exists = await user.exists({username: username});
     if (exists) {
-        console.log(`user exists, ${exists} returned, unable to create user`);
+        console.log(`user exists, ${exists} returned`);
         return Promise.resolve(exists);
     }
     // if use DNE
     else {
-        console.log(`user DNE, ${exists} returned, able to create user`);
+        console.log(`user DNE, ${exists} returned`);
         return Promise.reject(exists);
     }
 }
@@ -163,10 +186,23 @@ async function checkUserExist(username) {
 // get recipe from server, will be added with specific users
 // TODO
 app.post("/getAllRecipe", async function(req, res) {
-    let allRecipe = await recipe.find()
-        .then(recipeData => {return recipeData})
+    const username = req.body.username;
+    // get all recipeIDs from an account
+    let currUser = await user.findOne({username: username})
+        .then(userQuery => {return userQuery})
         .catch(error => {return error});
-    res.send(allRecipe);
+    const userFav = currUser.favorites;
+    // array to send all the data
+    let recipeArr = [];
+    for(let i = 0; i < userFav.length; i++) {
+        let tempRecipe = await recipe.findById({_id: userFav[i]})
+                .then(recipeData => {return recipeData})
+                .catch(error => {return error});
+        recipeArr.push(tempRecipe);
+    }
+    console.log("finished loading all recipes from the user");
+    // console.log(recipeArr);
+    res.send(recipeArr);
 });
 
 // get recipe from server, will be added with specific users
@@ -176,7 +212,7 @@ app.post("/getRecipe", async function(req, res) {
     let oneRecipe = await recipe.findById({_id: _id})
         .then(recipeData => {return recipeData})
         .catch(error => {return error});
-    console.log("in getRecipe: " + _id);
+    // console.log("in getRecipe: " + _id);
     res.send(oneRecipe);
 });
 
