@@ -37,7 +37,8 @@ app.use (bodyParser.json());
 // userdata
 const userSchema = new mongoose.Schema({
     username: String,
-    password: String
+    password: String,
+    favorites: Array
 });
 // recipedata
 const recipeSchema = new mongoose.Schema({
@@ -123,6 +124,7 @@ async function userLogin(username, password) {
 app.post("/register", async function(req, res) {
     const username = req.body.username;
     const password = req.body.password;
+    const favorites = [];
     // if user exists
     let exists = await checkUserExist(username)
         .then(resolved => {return resolved})
@@ -132,7 +134,7 @@ app.post("/register", async function(req, res) {
         return;
     }
     // if user DNE, create a new user profile & store in DB
-    const newProfile = new user({username: username, password: password});
+    const newProfile = new user({username: username, password: password, favorites: favorites});
     await newProfile.save();
     res.send("register successful");
 });
