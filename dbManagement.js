@@ -261,6 +261,7 @@ async function checkRecipeExist(_id) {
 
 // delete recipe
 app.post("/delete", async function(req, res) {
+    const username = req.body.username;
     const _id = req.body._id;
     // if recipe exists
     let exists = await checkRecipeExist(_id)
@@ -277,6 +278,12 @@ app.post("/delete", async function(req, res) {
             res.send(`delete failed, ${error}`);
             return;
         });
+    // if exists in user's fav, delete
+    await user.findOneAndUpdate({username: username, favorites: _id}, {$pull: {favorites: _id}})
+            .catch(error => {
+                res.send(`delete failed, ${error}`);
+                return;
+            });
     res.send(`recipe ${_id} deleted`);
 });
 
