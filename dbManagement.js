@@ -133,11 +133,18 @@ app.post("/register", async function(req, res) {
         res.send("user already exists");
         return;
     }
+    // check if username and password meet limitation (username can only contain letters and numbers)
+    if (username.length < 4 || password.length < 8 || !(/^[A-Za-z0-9]+$/.test(username)) ) {
+        res.send("username shuold only include letters and numbers, username shold contain more than 3 characters, password should contain more than 7 characters");
+        return;
+    }
     // if user DNE, create a new user profile & store in DB
     const newProfile = new user({username: username, password: password, favorites: favorites});
     await newProfile.save();
     res.send("register successful");
 });
+
+app.post("")
 
 // check if user exists
 async function checkUserExist(username) {
