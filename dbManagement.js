@@ -1,6 +1,6 @@
 // get the CRUD Mongodb function
 // const MongoClient = require('mongodb').MongoClient;
-const mongoose = require("mongoose");
+const mongooseServ = require("mongoose");
 const MongoUrl = "mongodb+srv://software_devils:software_devils@cluster0.uzv91.mongodb.net";
 const dbName = "devil_dishes?retryWrites=true&w=majority";
 
@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== "production") {
 
 // connect to MongoDB CRUD system
 async function connectdb() {
-    await mongoose.connect(MongoUrl + "/" + dbName)
+    await mongooseServ.connect(MongoUrl + "/" + dbName)
         .catch(error => {
             console.log(error);
         });
@@ -35,13 +35,13 @@ app.use (bodyParser.json());
 
 // mongoDB Schemas
 // userdata
-const userSchema = new mongoose.Schema({
+const userSchema = new mongooseServ.Schema({
     username: String,
     password: String,
     favorites: Array
 });
 // recipedata
-const recipeSchema = new mongoose.Schema({
+const recipeSchema = new mongooseServ.Schema({
     title: String,
     img: String,
     ingredients: Array,
@@ -52,8 +52,8 @@ const recipeSchema = new mongoose.Schema({
     tags: Array
 }); 
 // Convert Schema to model
-const user = mongoose.model("user", userSchema);
-const recipe = mongoose.model("recipe", recipeSchema);
+const user = mongooseServ.model("user", userSchema);
+const recipe = mongooseServ.model("recipe", recipeSchema);+
 
 
 // routers
@@ -227,6 +227,7 @@ app.post("/add", async function(req, res) {
     const instructions = req.body.instructions;
     const tags = req.body.tags;
     const _id = req.body._id;
+    console.log(author);
     // if recipe exists
     let exists = await checkRecipeExist(_id)
     .then(resolved => {return resolved})
@@ -241,7 +242,7 @@ app.post("/add", async function(req, res) {
     let id = await newProfile.save()
             .then(newRecipe => {return newRecipe._id.toString()})
             .catch(err => {return err});
-    console.log(id);
+    console.log("in dbManagement in line 245" + id);
     res.send(id);
 });
 
