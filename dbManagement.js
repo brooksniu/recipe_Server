@@ -321,3 +321,21 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`serving on port ${port}`);
 });
+
+app.post("/favTag", async function(req, res) {
+    const _id = req.body._id;
+    const favUnfav = req.body.favUnfav;
+    // if addfavtag 
+    if (favUnfav == "fav") {
+        await recipe.findByIdAndUpdate(_id, {$push: {tags: "favorite"}});
+        res.send("added to favorites");
+        return;
+    }
+    // if remove addfavtag
+    if (favUnfav == "unfav") {
+        await recipe.findByIdAndUpdate(_id, { $pull: {tags: "favorite"}});
+        res.send("deleted from favorites");
+        return;
+    }
+
+});
