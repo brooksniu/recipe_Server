@@ -357,13 +357,25 @@ app.post("/update", async function(req, res) {
         res.send("recipe doesn't exist, cannot update");
         return;
     }
-    // if recipe exists, delete from DB
+    // handle unchanged imgs
+    if (img == "original") {
+        await recipe.findByIdAndUpdate(_id, {title: title, ingredients: ingredients, servings: servings,
+                                                cookTime: cookTime, author: author, instructions: instructions, tags: tags})
+        .catch(error => {
+        res.send(`update failed, ${error}`);
+        return;
+        });
+    }
+    else {
+    // if image is also updated, update the img link
     await recipe.findByIdAndUpdate(_id, {title: title, img: img, ingredients: ingredients, servings: servings,
                                             cookTime: cookTime, author: author, instructions: instructions, tags: tags})
         .catch(error => {
-            res.send(`update failed, ${error}`);
-            return;
+        res.send(`update failed, ${error}`);
+        return;
         });
+    }
+
     res.send(`recipe ${title} updated`);
 });
 
