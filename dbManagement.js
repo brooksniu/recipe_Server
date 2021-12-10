@@ -141,7 +141,7 @@ app.post("/register", async function(req, res) {
     }
     // check if username and password meet limitation (username can only contain letters and numbers)
     if (username.length < 4 || password.length < 8 || !(/^[A-Za-z0-9]+$/.test(username)) ) {
-        res.send("username shuold only include letters and numbers, username shold contain more than 3 characters, password should contain more than 7 characters");
+        res.send("username shuold only include letters and numbers, username should contain more than 3 characters, and password should contain more than 7 characters");
         return;
     }
     // if user DNE, create a new user profile & store in DB
